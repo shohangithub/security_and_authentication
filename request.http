@@ -1,1 +1,7 @@
 GET http://localhost:5033/
+
+###
+GET http://localhost:5033/admin-only
+
+###
+GET http://localhost:5033/user-claim-check
