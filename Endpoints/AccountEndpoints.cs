@@ -163,6 +163,33 @@ public static class AccountEndpoints
 
             return Results.Ok("User claim added successfully");
         });
+        app.MapPost("/api/add-claim-to-role", async (RoleManager<IdentityRole> roleManager, AddClaimRoleDTO model) =>
+        {
+
+            // Validate the model data
+            var validationContext = new ValidationContext(model);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(model, validationContext, validationResults, true))
+            {
+                var errors = validationResults.Select(e => e.ErrorMessage);
+                return Results.BadRequest(errors);
+            }
+
+            var role = await roleManager.FindByNameAsync(model.RoleName);
+            if (role == null)
+            {
+                return Results.NotFound("Role not found.");
+            }
+
+            var result = await roleManager.AddClaimAsync(role, new Claim(model.ClaimName,model.ClaimValue));
+
+            if (!result.Succeeded)
+            {
+                return Results.BadRequest(result.Errors);
+            }
+
+            return Results.Ok("Role claim added successfully");
+        });
 
 
         app.MapGet("/api/confirm-email", async (UserManager<IdentityUser> userManager, string userId, string token) =>

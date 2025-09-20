@@ -39,6 +39,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorizationBuilder()
        .AddPolicy("admin", policy => policy.RequireRole("Admin"))
+       .AddPolicy("manage-employee", policy => policy.RequireRole("Admin").RequireClaim("type", "manage-employee"))
        .AddPolicy("doctor", policy => policy.RequireClaim("type", "doctor"))
        .AddPolicy("patient", policy => policy.RequireRole("User").RequireClaim("type", "patient"))
        .AddPolicy("user", policy => policy.RequireRole("User"));
@@ -55,6 +56,7 @@ app.UseAuthorization();
 app.MapPublicEndpoints();
 app.MapAdminEndpoints();
 app.MapAccountEndpoints();
+app.MapEmployeeEndpoints();
 
 app.MapGet("/", () => "I am root");
 

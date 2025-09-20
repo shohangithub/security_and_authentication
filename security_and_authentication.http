@@ -31,7 +31,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "roleName": "User"
+    "roleName": "Admin"
 }
 
 
@@ -56,7 +56,7 @@ Content-Type: application/json
 
 {
     "email": "admin@example.com",
-    "role": "User"
+    "role": "Admin"
 }
 
 
@@ -70,6 +70,19 @@ Content-Type: application/json
     "email": "admin@example.com",
     "claimName": "type",
     "claimValue":"doctor"
+}
+
+
+###
+
+POST {{Host_Address}}/api/add-claim-to-role
+Accept: application/json
+Content-Type: application/json
+
+{
+    "roleName": "Admin",
+    "claimName": "type",
+    "claimValue":"manage-employee"
 }
 
 ###
@@ -92,3 +105,37 @@ Content-Type: application/json
 ###
 GET {{Host_Address}}/api/admin-only
 Accept: application/json
+
+
+
+// Employee Section
+
+
+
+###
+POST {{Host_Address}}/api/employee/create
+Accept: application/json
+Content-Type: application/json
+Cookie: .AspNetCore.Identity.Application=CfDJ8FSNPT-2TENDt06X1G8-DV-NX8HGQ6BFGcKyUFRX0j1cT_PN7CoQ9c6LSEm_4HGlsTWgrcm-gw5iJ55lvaNIPiYAKCF0A-n3XHYjFhIhJ4ax4yKUvmxAWWMkaSfd87s1Y0li7AJ-t42Ns1EoQG3JRs0WwEv4cASv3p4JKOnF9nSHZYjdQK6oxPP1_Mi8lvlW2G_cjwptFGFNEyx49tbVUk1hixtuXopiw-IMB8ZLeJ2SNdlTlnDiqLVSaK_LsDkrOaPKWSq-O7sDlnoondKzcbjED1AmmKnV2Z3cOfArAtxh388L51Axj2irSK8vTujO-wfeCgdY9tmQWOuXaRUCxzhUurdqBC4MGi77jt2NQjGxiLOc4U-uuMM7f-U_QSritDrk059S56-y9QlarMZ_inV4b1ypEaLEA5-bLkQSnJXJHpSAJ9BXa9jEZRgPoLcgu-m7QeSaNgB6D-EYTBguF-wL8kCtk3tMG6U1J9EluqqAsGzw1Re1Qj6pdhvDB8Y1btxCiLeBW3kmCfdrf2d5ILwvVDkB7e_GlDGa2uOx5miJ3WUY0_6TC-SfourN16m2DhVQ1uC2ZOc8_TIvoOiL54iKhcezv6Cs3AbFaH1N9tfGCk3fNlUYCq2ZPXq2aNJypYEZqR8OsG5UN-tC_6IfkOX_ujjyQXnwvshbfb46Pjs7B9CJ1Hw56ZvJtrgQPeKHE_dW9pgMaQKVgmY-Fu9_wn9elZ5U6iPALFVm-JfbgXmHwPSRLRP9ZZF2Pn4fSVJb6rQgYx_H-RIdn3SE92iMSzkT1w9zrz2JvbIouk7jI1Pkym0hnTcXNqCB4Ycqtd6LHfHdrGmKiC-r-SA0Ah30Z_U; path=/; samesite=lax; httponly
+
+{}
+
+###
+PUT {{Host_Address}}/api/employee/update
+Accept: application/json
+Content-Type: application/json
+Cookie: 
+
+{}
+
+###
+DELETE {{Host_Address}}/api/employee/delete
+Accept: application/json
+Content-Type: application/json
+Cookie: 
+
+
+###
+GET {{Host_Address}}/api/employee/get
+Accept: application/json
+
