@@ -1,6 +1,94 @@
-@security_and_authentication_HostAddress = http://localhost:5033
-
-GET {{security_and_authentication_HostAddress}}/weatherforecast/
-Accept: application/json
+@Host_Address = http://localhost:5033
 
 ###
+
+GET {{Host_Address}}/api/public/dashboard
+Content-Type: application/json
+
+
+###
+
+GET {{Host_Address}}/api/admin/dashboard
+Cookie: .AspNetCore.Identity.Application=CfDJ8FSNPT-2TENDt06X1G8-DV-soMnoabg1MIl2usTvO6FmmSofOFf4Jfs-u2mG_P-36INtgULyOuowS_Uyq1eE2hKxqDKu-ohbax2CGBA0zSfB4KnGCtY17BtHWIH4cYMVXzAJUomMgmgV6R5KbMV8I4LTdPKeOv4xnsIFBXBVm-2ymyre6Ty_Dfa9mjVo6EMN5wkgMkx23P9mEWlNXV4vrpJtrsCScaXXbT5JeJ_dRUvolhReJ-Tc_V8lfazSCq66I7fiz8z-zUNWOKpjB347Y0qeArnYNd2BhHy1K3f-62J_9viQ2kKtXaVnsp73KgiVK_OLfqvHrdl6VcZ5jXad0BkG-KqpHdglMcAfM-gARvapIOPhanho4a8UcwqJCmhMJteJpUtjYtoz17hDfQ5_M_MUXfiQsfyVNlwfFrqLbLWezFWohB1uqvdmL5ay6V0FKzlAnrIKpR2lccwlUN7U93O8ZjGja7Oywpy36JtOB_z7chXpxhpKCBf1YKB_wLZRyQLYbxzPHCMZn4-X08nDttRLUAV4W8S6tPfwAb64oyXRG-6v4Rv5cZUNUUyHOcHWP1Az7o4b8Zis660YpQAI8iV5RbmPeygvPOIeR_FtsIeXDknLHQvSw45OG04lbGSJ6FQOdU2JqozlSY8CSKv8KYDt4XR9uGqX-2t1G7hbyQyKWzWEfkI5D_BnPgUXxuBPNM2_oBihSAAUMY-XyjDjUVwfMTHx6zzklUMXqLaQO29SZHsDfPBsuW2zwCUzTT5Q1dP_AgeP5yTHoUxY9iHDm9UB6O-sEnrLup3WzydrydLxMg7v3aEKPGRabWsTbrM8O1QxesTyQQYZwEsu77rSqUxXGQRVHeLGWxavgZao-zNGFJEsvNyLWa-jiE7jIcxVu5PnMEa1IyPwAiVwqDPnldo; path=/; samesite=lax; httponly
+
+
+
+###
+
+GET {{Host_Address}}/api/doctor/dashboard
+
+###
+
+GET {{Host_Address}}/api/patient/dashboard
+
+###
+GET {{Host_Address}}/api/user/dashboard
+
+
+###
+POST {{Host_Address}}/api/create-role
+Accept: application/json
+Content-Type: application/json
+
+{
+    "roleName": "User"
+}
+
+
+###
+
+POST {{Host_Address}}/api/register
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "Password123!",
+    "confirmPassword": "Password123!"
+}
+
+
+###
+
+POST {{Host_Address}}/api/assign-role
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "role": "User"
+}
+
+
+###
+
+POST {{Host_Address}}/api/add-claim
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "claimName": "type",
+    "claimValue":"doctor"
+}
+
+###
+POST {{Host_Address}}/api/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "Password123!"
+}
+
+
+###
+POST {{Host_Address}}/api/logout
+Accept: application/json
+Content-Type: application/json
+
+
+###
+GET {{Host_Address}}/api/admin-only
+Accept: application/json
