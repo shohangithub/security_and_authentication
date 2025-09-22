@@ -527,11 +527,13 @@ app.MapGet("/api/admin/dashboard", () => "You are in Admin Dashboard.").RequireA
 If I send request to `/api/admin/dashboard`, user claim check, we are unauthorized. So let you do, log in again. And then let's go ahead and grab the cookie. Because what your browser would do normally is grab this cookie and then send it back as the cookie header. And so now if I run this code, we get back a 200 OK admin dashboard.
 
 
-    ```http
-        GET {{Host_Address}}/api/admin/dashboard
-        Cookie: .AspNetCore.Identity.Application=CfDJ8FSNPT-2TENDt06X1G8-DV-2C4FSJBtOklYqkndQtauiMBa1AZoxhEBRiXp1vNRPbUePWmDrmbWQSq5sRMJER_BxPLImt9laxLezWF7r4t0tlfrRj6QZezKSKIrrhsQ3fJhwgmk4Gs77acBHJT_pN5wGn3pw2KpE4uemQsEdK8ABlOWVG9XOYa0Fio-f9Jona11z1KA0df01I8y_s5kDTyTKcQusHwlNa6tHLOd54Y8KxTPllYXN_4NtwQ3wThOLXZTU2Krkh8_SMMPEsUVzVoTO_Vvr8wASYLsaSpu_CCfyvP0SN19N2c1jfVmn_23DQ3Ch28Acg9icjluSQha8hg98k6YafCyAq7s_UwQBX_1pP-2_93E0oYSJPJ8B2q9VUIhrS-bzdxSHT0clK4VT384CkGDqCFPyjH-EmtLvdfGqGi2ZZINuz-LdDRhHvdoQOMdz2xv4d_D-VcQLN7XHwj5J0ayu8GMGXMd8miTTexishHSpzNZS7cDzFBMZGZCYl_R_ZOn-o4I3Ek7GRpcL7CE5-MJLsPTK9UO4LhohvmMdsqpoefvCJdA2bIMEYJANaUxi78G8hwvOrsqgI7e7EsaQ1ylPrD6htqzXVyIqp1loIu2FnZfpQRCw_G3J3fc69Wwx-L2yvVR6ZqBy2cAjGaiQKsViWvHWSS2wA7Z29oe6YfpZIUH9ymxB0egAqRS7dfzTNUNVTAc2RQ7akCetjFRH3gaoR8TvuWT-2B0b46NIRGnZ9kj4WEuc8S33sLe7jDqM9pULef1uLyneCHnQYdNaU0K5pdnNPoJPOOPLYnwqASnfLi3CHP--Zw6XlDR2dTLL6U5HqovBZVqUY3JS3Ks; path=/; samesite=lax; httponly
+```http
+###
 
-    ```
+GET {{Host_Address}}/api/admin/dashboard
+Cookie: cookie here
+
+```
 
 
 Now our user has the admin role, but we weren't actually checking for it because we were just checking to see if we had an authorized user by `RequireAuthorization()`. So they just needed to have a cookie that says they had logged in. There was no particular permission required. Look:
@@ -614,33 +616,33 @@ public class AddClaimDTO
 
 
 ```c#
-     app.MapPost("/api/add-claim", async (UserManager<IdentityUser> userManager, AddClaimDTO model) =>
+    app.MapPost("/api/add-claim", async (UserManager<IdentityUser> userManager, AddClaimDTO model) =>
+    {
+
+        // Validate the model data
+        var validationContext = new ValidationContext(model);
+        var validationResults = new List<ValidationResult>();
+        if (!Validator.TryValidateObject(model, validationContext, validationResults, true))
         {
+            var errors = validationResults.Select(e => e.ErrorMessage);
+            return Results.BadRequest(errors);
+        }
 
-            // Validate the model data
-            var validationContext = new ValidationContext(model);
-            var validationResults = new List<ValidationResult>();
-            if (!Validator.TryValidateObject(model, validationContext, validationResults, true))
-            {
-                var errors = validationResults.Select(e => e.ErrorMessage);
-                return Results.BadRequest(errors);
-            }
+        var user = await userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            return Results.NotFound("User not found.");
+        }
 
-            var user = await userManager.FindByEmailAsync(model.Email);
-            if (user == null)
-            {
-                return Results.NotFound("User not found.");
-            }
+        var result = await userManager.AddClaimAsync(user, new Claim(model.ClaimName,model.ClaimValue));
 
-            var result = await userManager.AddClaimAsync(user, new Claim(model.ClaimName,model.ClaimValue));
+        if (!result.Succeeded)
+        {
+            return Results.BadRequest(result.Errors);
+        }
 
-            if (!result.Succeeded)
-            {
-                return Results.BadRequest(result.Errors);
-            }
-
-            return Results.Ok("User claim added successfully");
-        });
+        return Results.Ok("User claim added successfully");
+    });
 
 ```
 API request:
@@ -666,7 +668,6 @@ Content-Type: application/json
 
 GET {{Host_Address}}/api/admin/dashboard
 Cookie: your cookie here
-
 
 
 ###
