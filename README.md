@@ -1,8 +1,8 @@
-# security_and_authentication
-This is a basic to advance authentication and authorization practice project
-
-
 # Securing APIs With ASP.NET Identity
+
+### **Introduction:**
+Welcome to Securing APIs with ASP.NET Identity. In this module, you'll learn to secure your applications with user roles, claims, token-based authentication, and external authentication providers. By the end, you'll be ready to build secure, reliable systems that protect users and data. We will begin by exploring ASP.NET Identity and understanding its role in managing authentication and authorization for modern applications. Next, we'll examine user registration and authentication, and learn how to implement secure and efficient workflows for user access. Then, we'll focus on managing user roles and claims, a crucial step in defining and controlling access within your applications. 
+
 ### **ASP.NET Identity:**
 
 #### **ASP.NET Identity** is a membership system designed to handle user authentication, authorization, and user roles in secure *ASP.NET* applications. Its features ensure a robust framework for managing identity-related tasks efficiently.
@@ -591,137 +591,109 @@ builder.Services.AddAuthorizationBuilder()
        .AddPolicy("user", policy => policy.RequireRole("User"));
 ```
 
+Then, we create a add-claim enpoint to add claim to an user:
 
 
+```c#
+using System.ComponentModel.DataAnnotations;
 
+public class AddClaimDTO
+{
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
+    public string Email { get; set; }
 
+    [Required(ErrorMessage = "Claim Name is required")]
+    public string ClaimName { get; set; }
+    
+    [Required(ErrorMessage = "Claim Value is required")]
+    public string ClaimValue{ get; set; }
 
-
-
-**Bold Text**           →  Bold Text
-*Italic Text*           →  Italic Text
-***Bold + Italic***     →  Bold + Italic
-~~Strikethrough~~       →  ~~Strikethrough~~
-\*Escape special char\* →  *Escape special char*
-
-
-
-`Inline code`
-
-```bash
-# Code block with bash
-npm install
-```
-
-// JavaScript example
-console.log("Hello World");
-
-
-
-
-
----
-
-## 📋 Lists
-
-### Unordered
-
-```md
-- Item 1
-- Item 2
-  - Sub Item
-* Another style
-
+}
 ```
 
 
-1. First item
-2. Second item
-   1. Nested item
+```c#
+     app.MapPost("/api/add-claim", async (UserManager<IdentityUser> userManager, AddClaimDTO model) =>
+        {
+
+            // Validate the model data
+            var validationContext = new ValidationContext(model);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(model, validationContext, validationResults, true))
+            {
+                var errors = validationResults.Select(e => e.ErrorMessage);
+                return Results.BadRequest(errors);
+            }
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return Results.NotFound("User not found.");
+            }
+
+            var result = await userManager.AddClaimAsync(user, new Claim(model.ClaimName,model.ClaimValue));
+
+            if (!result.Succeeded)
+            {
+                return Results.BadRequest(result.Errors);
+            }
+
+            return Results.Ok("User claim added successfully");
+        });
+
+```
+API request:
+
+```http
+POST {{Host_Address}}/api/add-claim
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "claimName": "type",
+    "claimValue":"doctor"
+}
+
+```
+
+ We added claim to an user successfully. Then, try login and copy the cookie and put it into header. Now, If we try these enpoint now it works as expected.
+
+
+```http
+###
+
+GET {{Host_Address}}/api/admin/dashboard
+Cookie: your cookie here
+
+
+
+###
+
+GET {{Host_Address}}/api/doctor/dashboard
+
+###
+
+GET {{Host_Address}}/api/patient/dashboard
+
+###
+GET {{Host_Address}}/api/user/dashboard
+
+
+```
 
 
 
 
-[Text](https://example.com)
-<https://example.com>   <!-- Auto-link -->
-
-
-
-
-![Alt Text](./path/image.png)
-![Hosted](https://example.com/image.png)
-
-
-
-
-> This is a blockquote.
-> It can span multiple lines.
-
-
-
-
----
-
-
-
-
-
-- [x] Completed task
-- [ ] Incomplete task
-
-
-
-
-
-
-
-| Column 1 | Column 2 |
-|----------|----------|
-| Row 1    | Value 1  |
-| Row 2    | Value 2  |
-
-
-
-
-
-:rocket: :tada: :fire: :bug: :sparkles:
-
-
-
-
-
-
-# .env file
-API_KEY=your_api_key
-DB_URI=mongodb://localhost:27017
-
-
-
-
-
-## 📚 Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
-
-
-
-
-
-# Run tests
-npm test
-
-
-
-
-## 📝 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### **Conclusion:** 
+Here's what we covered in this article. We began by introducing ASP.NET Identity, highlighting its vital role in managing authentication and authorization for modern applications. Next, you explored the process of user registration and authentication, learning how to implement secure workflows that protect user access effectively. Then, we examined how to manage user roles and claims, enabling precise control over application permissions and ensuring robust access management. Congratulations on completing Securing APIs with ASP.NET Identity. You've taken an essential step in building secure, reliable, and user-friendly applications. 
 
 
 
 
 
 
-## 📬 Contact
 
-Created by [@yourusername](https://github.com/yourusername) – feel free to connect!
+### Contact:
+Created by [@shohangithub](https://github.com/shohangithub) – feel free to connect!
